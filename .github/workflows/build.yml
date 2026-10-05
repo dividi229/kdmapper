@@ -1,0 +1,33 @@
+name: Build kdmapper
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install WDK
+        run: |
+          choco install windowsdriverkit11 -y --no-progress
+
+      - name: Build Release x64
+        run: |
+          msbuild kdmapper.sln /p:Configuration=Release /p:Platform=x64 /m /v:minimal
+
+      - name: Upload kdmapper.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: kdmapper-release-x64
+          path: |
+            x64/Release/kdmapper.exe
+            x64/Release/SymbolsFromPDB.exe
