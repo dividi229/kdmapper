@@ -25,7 +25,7 @@ jobs:
           msbuild kdmapper.sln /p:Configuration=Release /p:Platform=x64 /m /v:minimal
 
       - name: Find built files
-        run: dir /s *.exe
+        run: Get-ChildItem -Recurse -Filter *.exe | Select-Object FullName
 
       - name: Upload kdmapper.exe
         uses: actions/upload-artifact@v4
